@@ -1,0 +1,120 @@
+<?xml version="1.0"?>
+<sdf version="1.6">
+  <world name="default">
+
+<!--
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+-->
+
+
+<model name="ground">
+      <pose>75 -41.8 0 0 0 1.57</pose>
+      <static>1</static>
+      <link name="ground">
+        <collision name="ground_coll">
+          <geometry>
+            <box>
+              <size>83.6 150 0.05</size>
+            </box>
+          </geometry>
+          <surface>
+            <contact>
+              <ode/>
+            </contact>
+          </surface>
+        </collision>
+        <visual name="ground_vis">
+          <geometry>
+            <box>
+              <size>83.6 150  0.05</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri> ./course.material </uri>  <!-- file://course.material -->
+              <name>course</name>
+            </script>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <include>
+      <uri>model://sun</uri>
+    </include>
+    <!-- 새로운 camera_link 추가 -->
+    <link name="camera_link">
+      <pose>0.0 0.161236 1.386042 0.135030 0 0</pose>
+      <visual name="camera_visual">
+        <geometry>
+          <box>
+            <size>0.1 0.1 0.1</size>
+          </box>
+        </geometry>
+      </visual>
+    </link>
+
+    <link name="camera_rgb_optical_frame">
+      <inertial>
+          <pose>0 0 0 0 0 0 </pose>
+          <inertia>
+              <ixx>0.001</ixx>
+              <ixy>0.000</ixy>
+              <ixz>0.000</ixz>
+              <iyy>0.001</iyy>
+              <iyz>0.000</iyz>
+              <izz>0.001</izz>
+          </inertia>
+          <mass>0.035</mass>
+      </inertial>
+      
+      <pose>0.0 0.161236 1.386042 0.135030 0.1745 0</pose>
+      <sensor name="camera1" type="camera">
+        <always_on>true</always_on>
+        <visualize>true</visualize>
+        <update_rate>10</update_rate>
+        <camera name="picam">
+          <horizontal_fov>1.085595</horizontal_fov>
+          <image>
+            <width>640</width>
+            <height>480</height>
+            <format>R8G8B8</format>
+          </image>
+          <clip>
+            <near>0.03</near>
+            <far>100</far>
+          </clip>
+          <noise>
+            <type>gaussian</type>
+            <mean>0.0</mean>
+            <stddev>0.007</stddev>
+          </noise>
+        </camera>
+        <plugin name="camera_driver" filename="libgazebo_ros_camera.so">
+          <!-- ros -->
+          <namespace>/demo</namespace>
+          <remapping>image_raw:=image_demo</remapping>
+          <remapping>camera_info:=image_demo</remapping>
+          <!-- /ros -->
+        </plugin>
+      </sensor>
+    </link>
+    
+    
+    <!-- 기존 모델에 새로운 camera_link을 연결하는 joint 추가 -->
+    <joint name="camera_rgb_joint" type="fixed">
+      <parent>top_front</parent>
+      <child>camera_link</child>
+      <pose>0 0 0.1 0 0 0</pose>
+      <axis>
+        <xyz>0 0 1</xyz>
+      </axis>
+    </joint> 
+
+
+  </world>
+</sdf>
+
+
